@@ -5,7 +5,8 @@
   "devDependencies": {
     "grunt": "latest",
     "grunt-contrib-concat": "latest",
-    "grunt-contrib-uglify": "latest"
+    "grunt-contrib-uglify": "latest",
+    "grunt-bump": "latest"
   },
   "repository": {
     "type": "git",
