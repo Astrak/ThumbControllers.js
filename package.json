@@ -1,7 +1,7 @@
 {
   "name": "thumbcontrollers",
   "description": "Some svg controllers for interactive apps",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
     "grunt": "latest",
     "grunt-contrib-concat": "latest",
