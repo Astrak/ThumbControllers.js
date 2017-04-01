@@ -2,34 +2,42 @@ var ThumbControllers = ThumbControllers || {};
 
 ThumbControllers.slider = function ( options ) {
 
+	var that = this;
+
+	var width = 200, thumbWidth = 50;
+
+	var x0 = false, startValue, offset = 0,
+		thumbValue = 0;//CSS positioning between 0 and 1.
+
+	var w = document.createElement( 'div' ),
+		ramp = document.createElement( 'div' );
+		thumb = document.createElement( 'div' );
+		text = document.createElement( 'p' );
+
 	this.value = 0;
 	this.max = 1;
 	this.min = 0;
-	this.step = 0.01;//0 = just compute value.
-	var color1 = '#666', color2 = '#333';
+	this.step = 0.01;
+	this.display = true;
+
+	this.onSlide = null;
+
+	var color1 = '#666', 
+		color2 = '#333';
 
 	if ( options ) {
 
-		this.max = options.max || this.max;
-		this.min = options.min || this.min;
-		this.step = options.step || this.step;
+		this.max = typeof options.max === 'undefined' ? this.max : options.max;
+		this.min = typeof options.min === 'undefined' ? this.min : options.min;
+		this.step = typeof options.step === 'undefined' ? this.step : optinos.step;
+		this.value = typeof options.value === 'undefined' ? this.value : options.value;
+		this.display = typeof options.display === 'undefined' ? this.display : options.display;
 		color1 = options.color1 || color1;
 		color2 = options.color2 || color2;
 
 		update();
 
 	}
-
-	this.onSlide = null;
-
-	var that = this;
-
-	var width = 200, thumbWidth = 50;
-
-	var w = document.createElement( 'div' ),
-		ramp = document.createElement( 'div' );
-		thumb = document.createElement( 'div' );
-		text = document.createElement( 'p' );
 
 	w.appendChild( ramp );
 	w.appendChild( thumb );
@@ -43,8 +51,6 @@ ThumbControllers.slider = function ( options ) {
 	thumb.style.cssText = 'width:' + thumbWidth + 'px;height:' + thumbWidth + 'px;overflow:hidden;border-radius:50%;background:' + color2 + ';top:50%;margin-top:-' + thumbWidth / 2 + 'px;position:absolute;box-shadow:0 0 10px;';
 
 	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
-
-	var x0 = false, startValue, offset = 0;
 
 	thumb.addEventListener( 'mousedown', onMouseDown, false );
 	thumb.addEventListener( 'touchstart', onMouseDown, false );
@@ -60,8 +66,6 @@ ThumbControllers.slider = function ( options ) {
 
 	this.el = w;
 
-	this.thumb = thumb;
-
 	this.setValue = function ( v ) {
 
 		update( v );
@@ -74,9 +78,15 @@ ThumbControllers.slider = function ( options ) {
 
 		computeValue( v );
 
-		thumb.style.left = that.value * ( width - thumbWidth ) + 'px';
+		thumb.style.left = thumbValue * ( width - thumbWidth ) + 'px';
 
-		if ( that.onSlide ) that.onSlide( that.value );
+		if ( that.display ) 
+
+			text.textContent = that.value;
+
+		if ( that.onSlide ) 
+
+			that.onSlide( that.value );
 
 	}
 
@@ -84,30 +94,30 @@ ThumbControllers.slider = function ( options ) {
 
 		var value = typeof v === 'undefined' ? that.value : v;
 
-		value = clamp( that.min, that.max, value );
+		value = clamp( 0, 1, value );
 
-		if ( that.step ) {
+		thumbValue = value;
 
-			var step = that.step, val = value, m = 0;
+		value = value * ( that.max - that.min ) + that.min;
 
-			//Convert to integers to avoid floating point operation issues
-			if ( val !== parseInt( val ) || step !== parseInt( step ) ) {
+		var step = that.step, val = value, m = 0;
 
-				while ( val !== parseInt( val ) || step !== parseInt( step ) ) {
+		//Convert to integers to avoid floating point operation issues
+		if ( val !== parseInt( val ) || step !== parseInt( step ) ) {
 
-					val *= 10;
+			while ( val !== parseInt( val ) || step !== parseInt( step ) ) {
 
-					step *= 10;
+				val *= 10;
 
-					m++;
+				step *= 10;
 
-				}
+				m++;
 
 			}
 
-			value = ( val - val % step ) / Math.pow( 10, m );
-
 		}
+
+		value = ( val - val % step ) / Math.pow( 10, m );
 
 		that.value = value;
 
@@ -137,11 +147,7 @@ ThumbControllers.slider = function ( options ) {
 
 		x0 = !! e.touches ? e.touches[ 0 ].clientX : e.clientX;
 
-		x0 -= offset;
-
-		var value = ( x0 - thumbWidth / 2 ) / ( width - thumbWidth );
-
-		startValue = clamp( that.min, that.max, value );
+		startValue = ( x0 - offset - thumbWidth / 2 ) / ( width - thumbWidth );
 
 		if ( e.target === ramp ) 
 
@@ -157,9 +163,7 @@ ThumbControllers.slider = function ( options ) {
 
 			var x = !! e.touches ? e.touches[ 0 ].clientX : e.clientX;
 
-			var delta = ( x - x0 - offset ) / ( width - thumbWidth );
-
-			var value = clamp( that.min, that.max, delta + startValue );
+			var value = startValue + ( x - x0 ) / ( width - thumbWidth );
 
 			update( value );
 
