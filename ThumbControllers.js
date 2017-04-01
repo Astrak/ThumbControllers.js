@@ -5,7 +5,7 @@ ThumbControllers.slider = function ( options ) {
 	this.value = 0;
 	this.max = 1;
 	this.min = 0;
-	this.step = 0.1;//0 = just compute value.
+	this.step = 0.01;//0 = just compute value.
 	var color1 = '#666', color2 = '#333';
 
 	if ( options ) {
@@ -88,23 +88,24 @@ ThumbControllers.slider = function ( options ) {
 
 		if ( that.step ) {
 
-			var n = value - value % that.step;
-
-			console.log(n)
+			var step = that.step, val = value, m = 0;
 
 			//Convert to integers to avoid floating point operation issues
-			var d = that.step.toString().indexOf( '.' ) > -1 ? true : false;
+			if ( val !== parseInt( val ) || step !== parseInt( step ) ) {
 
-			var m = 1;
+				while ( val !== parseInt( val ) || step !== parseInt( step ) ) {
 
-			while ( res < 10 ) {
+					val *= 10;
 
-				res = d ? 
+					step *= 10;
 
-			}that.step.toString().length;
-			value = n;//parseFloat( n.toString().slice( 0, -1 ) );
+					m++;
 
-			console.log(value)
+				}
+
+			}
+
+			value = ( val - val % step ) / Math.pow( 10, m );
 
 		}
 
