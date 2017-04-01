@@ -12,6 +12,8 @@ Result :
 
 ![Simple slider](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/slider.png "Simple slider")
 
+Example at http://codepen.io/Astrak/pen/yYJJXN.
+
 ## Full pattern
 
 Values are default :

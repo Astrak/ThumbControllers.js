@@ -93,10 +93,6 @@ ThumbControllers.Slider = function ( options ) {
 
 			text.textContent = that.value;
 
-		if ( that.onSlide ) 
-
-			that.onSlide( that.value );
-
 	}
 
 	function computeValue ( v ) {
@@ -162,6 +158,10 @@ ThumbControllers.Slider = function ( options ) {
 
 			update( startValue );
 
+		if ( that.onSlide ) 
+
+			that.onSlide( that.value );
+
 		return false;
 
 	}
@@ -175,6 +175,10 @@ ThumbControllers.Slider = function ( options ) {
 			var value = startValue + ( x - x0 ) / ( width - thumbWidth );
 
 			update( value );
+
+			if ( that.onSlide ) 
+
+				that.onSlide( that.value );
 
 		}
 
