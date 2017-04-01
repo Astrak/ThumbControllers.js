@@ -1,6 +1,6 @@
 var ThumbControllers = ThumbControllers || {};
 
-ThumbControllers.slider = function ( options ) {
+ThumbControllers.Slider = function ( options ) {
 
 	var that = this;
 
@@ -38,12 +38,6 @@ ThumbControllers.slider = function ( options ) {
 
 	ramp.className = thumb.className = 'grab';
 
-	ramp.style.cssText = 'width:' + width + 'px;height:8px;background:' + color1 + ';border-radius:2px;top:50%;margin-top:-4px;position:absolute;';
-
-	thumb.style.cssText = 'width:' + thumbWidth + 'px;height:' + thumbWidth + 'px;overflow:hidden;border-radius:50%;background:' + color2 + ';top:50%;margin-top:-' + thumbWidth / 2 + 'px;position:absolute;box-shadow:0 0 10px;';
-
-	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
-
 	thumb.addEventListener( 'mousedown', onMouseDown, false );
 	thumb.addEventListener( 'touchstart', onMouseDown, false );
 
@@ -63,10 +57,19 @@ ThumbControllers.slider = function ( options ) {
 		this.step = typeof options.step === 'undefined' ? this.step : options.step;
 		this.value = typeof options.value === 'undefined' ? this.value : options.value;
 		this.display = typeof options.display === 'undefined' ? this.display : options.display;
+		
+		width = typeof options.width === 'undefined' ? width : options.width;
+		thumbWidth = typeof options.thumbWidth === 'undefined' ? thumbWidth : options.thumbWidth;
 		color1 = options.color1 || color1;
 		color2 = options.color2 || color2;
 
 	}
+
+	ramp.style.cssText = 'width:' + width + 'px;height:8px;background:' + color1 + ';border-radius:2px;top:50%;margin-top:-4px;position:absolute;';
+
+	thumb.style.cssText = 'width:' + thumbWidth + 'px;height:' + thumbWidth + 'px;overflow:hidden;border-radius:50%;background:' + color2 + ';top:50%;margin-top:-' + thumbWidth / 2 + 'px;position:absolute;box-shadow:0 0 10px;';
+
+	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
 
 	update();
 
