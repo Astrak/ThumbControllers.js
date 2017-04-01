@@ -85,7 +85,7 @@ ThumbControllers.Slider = function ( options ) {
 
 		var value = typeof v === 'undefined' ? that.value : v;
 
-		computeValue( v );
+		computeValue( value );
 
 		thumb.style.left = thumbValue * ( width - thumbWidth ) + 'px';
 
