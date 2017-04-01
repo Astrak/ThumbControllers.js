@@ -14,6 +14,8 @@ slider.onSlide = value => {
 
 Result : 
 
+![Simple slider](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/slider.png "Simple slider")
+
 ## Full pattern
 
 Values are default :

@@ -25,26 +25,18 @@ ThumbControllers.slider = function ( options ) {
 	var color1 = '#666', 
 		color2 = '#333';
 
-	if ( options ) {
-
-		this.max = typeof options.max === 'undefined' ? this.max : options.max;
-		this.min = typeof options.min === 'undefined' ? this.min : options.min;
-		this.step = typeof options.step === 'undefined' ? this.step : optinos.step;
-		this.value = typeof options.value === 'undefined' ? this.value : options.value;
-		this.display = typeof options.display === 'undefined' ? this.display : options.display;
-		color1 = options.color1 || color1;
-		color2 = options.color2 || color2;
-
-		update();
-
-	}
-
 	w.appendChild( ramp );
 	w.appendChild( thumb );
 	thumb.appendChild( text );
 
-	ramp.className = 'pointer';
-	thumb.className = 'grab';
+	var style = document.createElement( 'style' );
+
+	document.head.appendChild( style );
+
+	style.sheet.insertRule( '.grab{cursor:grab;cursor:-webkit-grab;cursor:-moz-grab;}', 0 );
+	style.sheet.insertRule( '.grab:active{cursor:grabbing;cursor:-webkit-grabbing;cursor:-moz-grabbing;}', 0 );
+
+	ramp.className = thumb.className = 'grab';
 
 	ramp.style.cssText = 'width:' + width + 'px;height:8px;background:' + color1 + ';border-radius:2px;top:50%;margin-top:-4px;position:absolute;';
 
@@ -63,6 +55,20 @@ ThumbControllers.slider = function ( options ) {
 
 	window.addEventListener( 'mousemove', onMouseMove, false );
 	window.addEventListener( 'touchmove', onMouseMove, false );
+
+	if ( options ) {
+
+		this.max = typeof options.max === 'undefined' ? this.max : options.max;
+		this.min = typeof options.min === 'undefined' ? this.min : options.min;
+		this.step = typeof options.step === 'undefined' ? this.step : options.step;
+		this.value = typeof options.value === 'undefined' ? this.value : options.value;
+		this.display = typeof options.display === 'undefined' ? this.display : options.display;
+		color1 = options.color1 || color1;
+		color2 = options.color2 || color2;
+
+	}
+
+	update();
 
 	this.el = w;
 
