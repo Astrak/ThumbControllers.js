@@ -6,10 +6,6 @@ A library to avoid tons of CSS to make input (type range) available for mobile.
 const slider = new ThumbControllers.Slider();
 
 container.appendChild( slider.el );
-
-slider.onSlide = value => {
-	//Do something.	
-};
 ```
 
 Result : 
@@ -37,11 +33,13 @@ const slider = new ThumbControllers.Slider( options );
 
 document.body.appendChild( slider.el );
 
-slider.el.style.position = 'absolute';
-
 slider.setValue( 0.5 );
 
 slider.min = -.5;//Options display, min, max and step can be changed further.
+
+slider.onSlide = value => {
+	//Do something.	
+};
 ```
 
 ## Roadmap

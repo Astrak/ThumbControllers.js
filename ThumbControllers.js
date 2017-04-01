@@ -57,7 +57,7 @@ ThumbControllers.Slider = function ( options ) {
 		this.step = typeof options.step === 'undefined' ? this.step : options.step;
 		this.value = typeof options.value === 'undefined' ? this.value : options.value;
 		this.display = typeof options.display === 'undefined' ? this.display : options.display;
-		
+
 		width = typeof options.width === 'undefined' ? width : options.width;
 		thumbWidth = typeof options.thumbWidth === 'undefined' ? thumbWidth : options.thumbWidth;
 		color1 = options.color1 || color1;
@@ -111,7 +111,7 @@ ThumbControllers.Slider = function ( options ) {
 
 		var step = that.step, val = value, m = 0;
 
-		//Convert to integers to avoid floating point operation issues
+		//Convert to integers to avoid floating point operation issues.
 		if ( val !== parseInt( val ) || step !== parseInt( step ) ) {
 
 			while ( val !== parseInt( val ) || step !== parseInt( step ) ) {
