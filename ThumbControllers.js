@@ -1,29 +1,33 @@
 var ThumbControllers = ThumbControllers || {};
 
-ThumbControllers.slider = function ( options, onSlide ) {
+ThumbControllers.slider = function ( options ) {
 
 	this.value = 0;
 	this.max = 1;
 	this.min = 0;
-	this.step = 0;//0 = just compute value.
+	this.step = 0.1;//0 = just compute value.
+	var color1 = '#666', color2 = '#333';
 
 	if ( options ) {
 
 		this.max = options.max || this.max;
 		this.min = options.min || this.min;
 		this.step = options.step || this.step;
-		this.value = options.value || this.value;
+		color1 = options.color1 || color1;
+		color2 = options.color2 || color2;
+
+		update();
 
 	}
 
-	this.onSlide = onSlide;
+	this.onSlide = null;
 
 	var that = this;
 
 	var width = 200, thumbWidth = 50;
 
 	var w = document.createElement( 'div' ),
-		ramp = document.createElement( 'span' );
+		ramp = document.createElement( 'div' );
 		thumb = document.createElement( 'div' );
 		text = document.createElement( 'p' );
 
@@ -34,9 +38,11 @@ ThumbControllers.slider = function ( options, onSlide ) {
 	ramp.className = 'pointer';
 	thumb.className = 'grab';
 
-	ramp.style.cssText = 'width:' + width + 'px;height:8px;background:#F80;border-radius:2px;top:50%;margin-top:-4px;position:absolute;';
+	ramp.style.cssText = 'width:' + width + 'px;height:8px;background:' + color1 + ';border-radius:2px;top:50%;margin-top:-4px;position:absolute;';
 
-	thumb.style.cssText = 'width:' + thumbWidth + 'px;height:' + thumbWidth + 'px;border-radius:50%;background:#333;top:50%;margin-top:-' + thumbWidth / 2 + 'px;position:absolute;box-shadow:0 0 10px;';
+	thumb.style.cssText = 'width:' + thumbWidth + 'px;height:' + thumbWidth + 'px;overflow:hidden;border-radius:50%;background:' + color2 + ';top:50%;margin-top:-' + thumbWidth / 2 + 'px;position:absolute;box-shadow:0 0 10px;';
+
+	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
 
 	var x0 = false, startValue, offset = 0;
 
@@ -51,6 +57,66 @@ ThumbControllers.slider = function ( options, onSlide ) {
 
 	window.addEventListener( 'mousemove', onMouseMove, false );
 	window.addEventListener( 'touchmove', onMouseMove, false );
+
+	this.el = w;
+
+	this.thumb = thumb;
+
+	this.setValue = function ( v ) {
+
+		update( v );
+
+	};
+
+	function update ( v ) {
+
+		var value = typeof v === 'undefined' ? that.value : v;
+
+		computeValue( v );
+
+		thumb.style.left = that.value * ( width - thumbWidth ) + 'px';
+
+		if ( that.onSlide ) that.onSlide( that.value );
+
+	}
+
+	function computeValue ( v ) {
+
+		var value = typeof v === 'undefined' ? that.value : v;
+
+		value = clamp( that.min, that.max, value );
+
+		if ( that.step ) {
+
+			var n = value - value % that.step;
+
+			console.log(n)
+
+			//Convert to integers to avoid floating point operation issues
+			var d = that.step.toString().indexOf( '.' ) > -1 ? true : false;
+
+			var m = 1;
+
+			while ( res < 10 ) {
+
+				res = d ? 
+
+			}that.step.toString().length;
+			value = n;//parseFloat( n.toString().slice( 0, -1 ) );
+
+			console.log(value)
+
+		}
+
+		that.value = value;
+
+	}
+
+	function clamp ( min, max, v ) {
+
+		return Math.min( max, Math.max( min, v ) );
+
+	}
 
 	function onMouseDown ( e ) {
 
@@ -72,17 +138,13 @@ ThumbControllers.slider = function ( options, onSlide ) {
 
 		x0 -= offset;
 
-		startValue = Math.min( 1, Math.max( 0, ( x0 - thumbWidth / 2 ) / ( width - thumbWidth ) ) );
+		var value = ( x0 - thumbWidth / 2 ) / ( width - thumbWidth );
 
-		if ( e.target === ramp ) {
+		startValue = clamp( that.min, that.max, value );
 
-			that.value = startValue;
+		if ( e.target === ramp ) 
 
-			thumb.style.left = startValue * ( width - thumbWidth ) + 'px';
-
-			if ( that.onSlide ) that.onSlide( that.value );
-
-		}
+			update( startValue );
 
 		return false;
 
@@ -96,11 +158,9 @@ ThumbControllers.slider = function ( options, onSlide ) {
 
 			var delta = ( x - x0 - offset ) / ( width - thumbWidth );
 
-			that.value = Math.max( that.min, Math.min( that.max, ( delta + startValue ) ) );
+			var value = clamp( that.min, that.max, delta + startValue );
 
-			thumb.style.left = that.value * ( width - thumbWidth ) + 'px';
-
-			if ( that.onSlide ) that.onSlide( that.value );
+			update( value );
 
 		}
 
@@ -113,7 +173,5 @@ ThumbControllers.slider = function ( options, onSlide ) {
 		offset = 0;
 
 	}
-
-	return w;
 
 };
