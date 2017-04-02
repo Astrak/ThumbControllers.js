@@ -20,7 +20,7 @@ ThumbControllers.Slider = function ( options ) {
 	this.step = 0.01;
 	this.display = true;
 
-	this.onSlide = null;
+	this.onChange = null;
 
 	var color1 = '#666', 
 		color2 = '#333';
@@ -93,9 +93,9 @@ ThumbControllers.Slider = function ( options ) {
 
 			text.textContent = that.value;
 
-		if ( that.onSlide ) 
+		if ( that.onChange ) 
 
-			that.onSlide( that.value );
+			that.onChange( that.value );
 
 	}
 

@@ -45,7 +45,8 @@ slider.onSlide = value => {
 ```
 
 ## Roadmap
-
+- rename onSlide to onChange
+- solve inifite loop issue in the codepen example
 - count step from min
 - move to rounded step not floored step
 - cursor not set to grabbing when grabbing from ramp
