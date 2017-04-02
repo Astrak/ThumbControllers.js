@@ -4,7 +4,11 @@ ThumbControllers.Slider = function ( options ) {
 
 	var that = this;
 
-	var width = 200, thumbWidth = 50;
+	var width = 200, 
+		thumbWidth = 50, 
+		vertical,
+		color1 = '#666', 
+		color2 = '#333';
 
 	var x0 = false, startValue, offset = 0,
 		thumbValue = 0;//CSS positioning between 0 and 1.
@@ -21,9 +25,6 @@ ThumbControllers.Slider = function ( options ) {
 	this.display = true;
 
 	this.onChange = null;
-
-	var color1 = '#666', 
-		color2 = '#333';
 
 	w.appendChild( ramp );
 	w.appendChild( thumb );
@@ -62,12 +63,15 @@ ThumbControllers.Slider = function ( options ) {
 		thumbWidth = typeof options.thumbWidth === 'undefined' ? thumbWidth : options.thumbWidth;
 		color1 = options.color1 || color1;
 		color2 = options.color2 || color2;
+		vertical = options.vertical;
 
 	}
 
-	ramp.style.cssText = 'width:' + width + 'px;height:8px;background:' + color1 + ';border-radius:2px;top:50%;margin-top:-4px;position:absolute;';
+	ramp.style.cssText = 'position:absolute;border-radius:2px;background:' + color1 + ';';
+	ramp.style.cssText += vertical ? 'height:' + width + 'px;width:8px;top:50%;margin-left:-4px;' : 'width:' + width + 'px;height:8px;top:50%;margin-top:-4px;';
 
-	thumb.style.cssText = 'width:' + thumbWidth + 'px;height:' + thumbWidth + 'px;overflow:hidden;border-radius:50%;background:' + color2 + ';top:50%;margin-top:-' + thumbWidth / 2 + 'px;position:absolute;box-shadow:0 0 10px;';
+	thumb.style.cssText = 'overflow:hidden;position:absolute;box-shadow:0 0 10px;background:' + color2 + ';border-radius:50%;';
+	thumb.style.cssText += vertical ? 'height:' + thumbWidth + 'px;width:' + thumbWidth + 'px;left:50%;margin-left:-' + thumbWidth / 2 + 'px;' : 'width:' + thumbWidth + 'px;height:' + thumbWidth + 'px;top:50%;margin-top:-' + thumbWidth / 2 + 'px;';
 
 	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
 
@@ -76,6 +80,8 @@ ThumbControllers.Slider = function ( options ) {
 	this.el = w;
 
 	this.setValue = function ( v ) {
+
+		v = ( v - that.min ) / ( that.max - that.min );
 
 		update( v );
 
@@ -87,7 +93,13 @@ ThumbControllers.Slider = function ( options ) {
 
 		computeValue( value );
 
-		thumb.style.left = thumbValue * ( width - thumbWidth ) + 'px';
+		if ( vertical ) 
+
+			thumb.style.top = thumbValue * ( width - thumbWidth ) + 'px';
+
+		else 
+
+			thumb.style.left = thumbValue * ( width - thumbWidth ) + 'px';
 
 		if ( that.display ) 
 
@@ -105,7 +117,7 @@ ThumbControllers.Slider = function ( options ) {
 
 		value = clamp( 0, 1, value );
 
-		thumbValue = value;
+		thumbValue = vertical ? 1 - value : value;
 
 		value = value * ( that.max - that.min ) + that.min;
 
@@ -156,15 +168,25 @@ ThumbControllers.Slider = function ( options ) {
 
 		while ( ref ) {
 
-			offset += ref.offsetLeft;
+			offset += vertical ? ref.offsetTop : ref.offsetLeft;
 
 			ref = ref.offsetParent;
 
 		}
 
-		x0 = !! e.touches ? e.touches[ 0 ].clientX : e.clientX;
+		if ( vertical ) {
+			
+			x0 = !! e.touches ? e.touches[ 0 ].clientY : e.clientY;
 
-		startValue = ( x0 - offset - thumbWidth / 2 ) / ( width - thumbWidth );
+			startValue = 1 - ( x0 - offset - thumbWidth / 2 ) / ( width - thumbWidth );
+
+		} else {
+
+			x0 = !! e.touches ? e.touches[ 0 ].clientX : e.clientX;
+
+			startValue = ( x0 - offset - thumbWidth / 2 ) / ( width - thumbWidth );
+
+		}
 
 		if ( e.target === ramp ) 
 
@@ -178,9 +200,21 @@ ThumbControllers.Slider = function ( options ) {
 
 		if ( x0 !== false ) {
 
-			var x = !! e.touches ? e.touches[ 0 ].clientX : e.clientX;
+			var x, value;
 
-			var value = startValue + ( x - x0 ) / ( width - thumbWidth );
+			if ( vertical ) {
+				
+				x = !! e.touches ? e.touches[ 0 ].clientY : e.clientY;
+
+				value = startValue - ( x - x0 ) / ( width - thumbWidth );
+
+			} else {
+
+				x = !! e.touches ? e.touches[ 0 ].clientX : e.clientX;
+
+				value = startValue + ( x - x0 ) / ( width - thumbWidth );
+
+			}
 
 			update( value );
 
