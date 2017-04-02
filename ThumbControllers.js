@@ -236,3 +236,250 @@ ThumbControllers.Slider = function ( options ) {
 	}
 
 };
+
+ThumbControllers.CircularSlider = function ( options ) {
+
+	var that = this;
+
+	var width = 200,
+		width2 = 100,
+		color1 = '#666', 
+		color2 = '#333',
+		color3 = '#111',
+		onChange = null;
+
+	this.value = 0;
+	this.max = 1;
+	this.min = 0;
+	this.step = 0.01;
+	this.display = true;
+
+	var x0 = false, y0, startX, startY, value, thumbValue;
+
+	var style = document.createElement( 'style' );
+
+	document.head.appendChild( style );
+
+	style.sheet.insertRule( '.grab{cursor:grab;cursor:-webkit-grab;cursor:-moz-grab;}', 0 );
+	style.sheet.insertRule( '.grab:active{cursor:grabbing;cursor:-webkit-grabbing;cursor:-moz-grabbing;}', 0 );
+
+	if ( options ) {
+
+		this.max = typeof options.max === 'undefined' ? this.max : options.max;
+		this.min = typeof options.min === 'undefined' ? this.min : options.min;
+		this.step = typeof options.step === 'undefined' ? this.step : options.step;
+		this.value = typeof options.value === 'undefined' ? this.value : options.value;
+		this.display = typeof options.display === 'undefined' ? this.display : options.display;
+
+		width = typeof options.width === 'undefined' ? width : options.width;
+		width2 = width / 2;
+		color1 = options.color1 || color1;
+		color2 = options.color2 || color2;
+
+	}
+
+	var container = document.createElement( 'div' ), 
+		ns = "http://www.w3.org/2000/svg", 
+		svg = document.createElementNS( ns, 'svg'), 
+		ramp = document.createElementNS( ns, 'circle'), 
+		progress = document.createElementNS( ns, 'circle'), 
+		innerCircle = document.createElementNS( ns, 'circle'), 
+		text = document.createElement( 'p' );
+
+	svg.setAttribute( 'width', width ); svg.setAttribute( 'height', width );
+	svg.style.cssText = 'width: 100%; height: 100%;';
+	container.appendChild( svg );
+
+	var t = "translate(" + width2 + "," + width2 + ")";
+
+	ramp.setAttribute( 'transform', t );
+	ramp.setAttribute( 'r', '90' );
+	ramp.setAttribute( 'fill', color3 );
+	ramp.setAttribute( 'class', 'grab' );
+	progress.setAttribute( 'transform', t );
+	progress.setAttribute( 'r', '80' );
+	progress.setAttribute( 'fill', 'none' );
+	progress.setAttribute( 'class', 'grab' );
+	progress.setAttribute( 'stroke-dashoffset', '953' );
+	innerCircle.setAttribute( 'transform', t );
+	innerCircle.setAttribute( 'r', '70' );
+	innerCircle.setAttribute( 'fill', color2 );
+	innerCircle.setAttribute( 'class', 'grab' );
+
+	progress.style.cssText = 'stroke: ' + color1 + '; fill: none; stroke-width: 20;';
+
+	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
+
+	svg.appendChild( ramp );
+	svg.appendChild( progress );
+	svg.appendChild( innerCircle );
+
+	if ( that.display )
+
+		container.appendChild( text );
+
+	progress.addEventListener( 'mousedown', onMouseDown, false );
+	progress.addEventListener( 'touchstart', onMouseDown, false );
+
+	ramp.addEventListener( 'mousedown', onMouseDown, false );
+	ramp.addEventListener( 'touchstart', onMouseDown, false );
+
+	innerCircle.addEventListener( 'mousedown', onMouseDown, false );
+	innerCircle.addEventListener( 'touchstart', onMouseDown, false );
+
+	window.addEventListener( 'mouseup', onMouseUp, false );
+	window.addEventListener( 'touchend', onMouseUp, false );
+
+	window.addEventListener( 'mousemove', onMouseMove, false );
+	window.addEventListener( 'touchmove', onMouseMove, false );
+
+	this.el = container;
+
+	this.onChange = function ( f ) {
+
+		onChange = f;
+
+	};
+
+	this.setValue = function ( v ) {
+
+		v = ( v - that.min ) / ( that.max - that.min );
+
+		update( v );
+
+	};
+
+	function onMouseMove ( e ) {
+
+		if ( x0 !== false ) {
+
+			value = getValue( e );
+
+			update( value );
+			
+		}
+
+	}
+
+	function onMouseDown ( e ) {
+
+		var ref = container;
+
+		x0 = y0 = 0;
+
+		while ( ref ) {
+
+			x0 += ref.offsetLeft;
+			y0 += ref.offsetTop;
+
+			ref = ref.offsetParent;
+
+		}
+
+		x0 += width2;
+		y0 += width2;
+
+		value = getValue( e );
+
+		update( value );
+
+	}
+
+	function onMouseUp () {
+
+		x0 = false;
+
+	}
+
+	function update ( v ) {
+
+		var value = typeof v === 'undefined' ? that.value : v;
+
+		computeValue( value );
+
+		var offset = ( value * 2 * Math.PI + Math.PI / 2 ) * 100 / ( 2 * Math.PI );
+
+		progress.setAttribute( 'stroke-dashoffset', offset.toString() );
+
+		if ( that.display ) 
+
+			text.textContent = that.value;
+
+		if ( onChange ) 
+
+			onChange( that.value );
+
+	}
+
+	function computeValue ( v ) {
+
+		var value = typeof v === 'undefined' ? that.value : v;
+
+		value = clamp( 0, 1, value );
+
+		thumbValue = value;
+
+		value = value * ( that.max - that.min ) + that.min;
+
+		var step = that.step, val = value, m = 0;
+
+		//Convert to integers to avoid floating point operation issues.
+		if ( val !== parseInt( val ) || step !== parseInt( step ) ) {
+
+			while ( val !== parseInt( val ) || step !== parseInt( step ) ) {
+
+				val *= 10;
+
+				step *= 10;
+
+				m++;
+
+				if ( m > 5 ) {//Not much sense to go further of even 2 actually.. ?
+
+					val = parseInt( val );
+
+					step = parseInt( step );
+
+				}
+
+			}
+
+		}
+
+		value = ( val - val % step ) / Math.pow( 10, m );
+
+		that.value = value;
+
+	}
+
+	function getValue ( e ) {
+
+		var x, y, result, a;
+
+		x = !! e.touches ? e.touches[ 0 ].clientX : e.clientX;
+
+		y = !! e.touches ? e.touches[ 0 ].clientY : e.clientY;
+
+		x = x - x0;
+
+		y = - y - y0;
+
+		a = Math.atan( y / x );
+
+		result = x < 0 ? Math.PI + a : a;
+
+		result /= 2 * Math.PI;
+
+		return result;
+
+	}
+
+
+
+	function clamp ( min, max, v ) {
+
+		return Math.min( max, Math.max( min, v ) );
+
+	}
+
+};

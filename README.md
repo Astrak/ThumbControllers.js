@@ -11,17 +11,13 @@ See [example on Codepen](http://codepen.io/Astrak/pen/yYJJXN?editors=0010).
 
 + Horizontal :
 ```js
-const slider1 = new ThumbControllers.Slider();
-
-container.appendChild( slider1.el );
+const slider = new ThumbControllers.Slider();
 ```
 ![Simple slider](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/slider.png "Simple slider")
 
 + Vertical :
 ```js
-const slider2 = new ThumbControllers.Slider({ vertical: true });
-
-container.appendChild( slider2.el );
+const slider = new ThumbControllers.Slider({ vertical: true });
 ```
 ![Simple slider](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/vert-slider.png "Simple slider")
 
@@ -33,6 +29,7 @@ Values are default :
 const options = {
 	color1: '#666',//Ramp + text.
 	color2: '#333',//Thumb.
+	color3: '#111',//Circular slider : color of the empty part of the ramp.
 	display: true,//Display value on thumb.
 	min: 0,
 	max: 1,
@@ -61,6 +58,7 @@ slider.onChange( value => {
 ## Roadmap
 - count step from min
 - move to rounded step not floored step
+- step proportionnal to passed min/max !
 - cursor not set to grabbing when grabbing from ramp
 
 [npm-badge]: https://img.shields.io/npm/v/thumbcontrollers.svg
