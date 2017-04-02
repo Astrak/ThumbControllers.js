@@ -8,14 +8,15 @@ ThumbControllers.Slider = function ( options ) {
 		thumbWidth = 50, 
 		vertical,
 		color1 = '#666', 
-		color2 = '#333';
+		color2 = '#333',
+		onChange = null;
 
 	var x0 = false, startValue, offset = 0,
 		thumbValue = 0;//CSS positioning between 0 and 1.
 
 	var w = document.createElement( 'div' ),
-		ramp = document.createElement( 'div' );
-		thumb = document.createElement( 'div' );
+		ramp = document.createElement( 'div' ),
+		thumb = document.createElement( 'div' ),
 		text = document.createElement( 'p' );
 
 	this.value = 0;
@@ -23,8 +24,6 @@ ThumbControllers.Slider = function ( options ) {
 	this.min = 0;
 	this.step = 0.01;
 	this.display = true;
-
-	this.onChange = null;
 
 	w.appendChild( ramp );
 	w.appendChild( thumb );
@@ -79,6 +78,12 @@ ThumbControllers.Slider = function ( options ) {
 
 	this.el = w;
 
+	this.onChange = function ( f ) {
+
+		onChange = f;
+
+	};
+
 	this.setValue = function ( v ) {
 
 		v = ( v - that.min ) / ( that.max - that.min );
@@ -105,9 +110,9 @@ ThumbControllers.Slider = function ( options ) {
 
 			text.textContent = that.value;
 
-		if ( that.onChange ) 
+		if ( onChange ) 
 
-			that.onChange( that.value );
+			onChange( that.value );
 
 	}
 
