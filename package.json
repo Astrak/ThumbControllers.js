@@ -1,7 +1,7 @@
 {
   "name": "thumbcontrollers",
   "description": "A set of sliders with better interaction than native inputs of type 'range'.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "devDependencies": {
     "grunt": "latest",
     "grunt-contrib-concat": "latest",
