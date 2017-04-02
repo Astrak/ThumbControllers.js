@@ -122,6 +122,14 @@ ThumbControllers.Slider = function ( options ) {
 
 				m++;
 
+				if ( m > 5 ) {//Not much sense to go further of even 2 actually.. ?
+
+					val = parseInt( val );
+
+					step = parseInt( step );
+
+				}
+
 			}
 
 		}
