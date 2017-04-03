@@ -296,17 +296,17 @@ ThumbControllers.CircularSlider = function ( options ) {
 	ramp.setAttribute( 'r', '90' );
 	ramp.setAttribute( 'fill', color3 );
 	ramp.setAttribute( 'class', 'grab' );
-	progress.setAttribute( 'transform', t );
+	progress.setAttribute( 'transform', t + 'rotate(90)' );
 	progress.setAttribute( 'r', '80' );
 	progress.setAttribute( 'fill', 'none' );
 	progress.setAttribute( 'class', 'grab' );
-	progress.setAttribute( 'stroke-dashoffset', '953' );
+	//progress.setAttribute( 'stroke-dashoffset', '953' );
 	innerCircle.setAttribute( 'transform', t );
 	innerCircle.setAttribute( 'r', '70' );
 	innerCircle.setAttribute( 'fill', color2 );
 	innerCircle.setAttribute( 'class', 'grab' );
 
-	progress.style.cssText = 'stroke: ' + color1 + '; fill: none; stroke-width: 20;';
+	progress.style.cssText = 'stroke: ' + color1 + '; fill: none; stroke-width: 20;stroke-dasharray: 503';
 
 	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
 
@@ -332,6 +332,8 @@ ThumbControllers.CircularSlider = function ( options ) {
 
 	window.addEventListener( 'mousemove', onMouseMove, false );
 	window.addEventListener( 'touchmove', onMouseMove, false );
+
+	update();
 
 	this.el = container;
 
@@ -415,9 +417,9 @@ ThumbControllers.CircularSlider = function ( options ) {
 
 		var value = typeof v === 'undefined' ? that.value : v;
 
-		value = clamp( 0, 1, value );
-
 		thumbValue = value;
+
+		progress.style.strokeDashoffset = ( thumbValue * 503 ).toString();
 
 		value = value * ( that.max - that.min ) + that.min;
 
@@ -462,23 +464,15 @@ ThumbControllers.CircularSlider = function ( options ) {
 
 		x = x - x0;
 
-		y = - y - y0;
+		y = - y + y0;
 
-		a = Math.atan( y / x );
+		a = Math.atan( y / x ) + Math.PI / 2;
 
 		result = x < 0 ? Math.PI + a : a;
 
 		result /= 2 * Math.PI;
 
 		return result;
-
-	}
-
-
-
-	function clamp ( min, max, v ) {
-
-		return Math.min( max, Math.max( min, v ) );
 
 	}
 
