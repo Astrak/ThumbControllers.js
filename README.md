@@ -5,14 +5,17 @@
 
 A collection of 3 types sliders to replace inputs of type range on mobile.
 
-See [example on Codepen](http://codepen.io/Astrak/pen/yYJJXN?editors=0010).
-
 ```js
 const horizontalSlider = new ThumbControllers.Slider();
 const verticalSlider = new ThumbControllers.Slider({ vertical: true });
 const circularSlider = new ThumbControllers.CircularSlider();
 ```
 ![ThumbControllers.js](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/sliders.png "ThumbControllers.js")
+
+Codepen examples :
+
++ [Horizontal slider](http://codepen.io/Astrak/pen/yYJJXN?editors=0010).
++ [Circular slider](http://codepen.io/Astrak/pen/NGRRwN?editors=0010).
 
 ## Full pattern
 
