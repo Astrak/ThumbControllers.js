@@ -305,10 +305,11 @@ ThumbControllers.CircularSlider = function ( options ) {
 	innerCircle.setAttribute( 'r', '70' );
 	innerCircle.setAttribute( 'fill', color2 );
 	innerCircle.setAttribute( 'class', 'grab' );
+	text.className = 'grab';
 
 	progress.style.cssText = 'stroke: ' + color1 + '; fill: none; stroke-width: 20;stroke-dasharray: 503';
 
-	text.style.cssText = 'text-align:center;font-family:sans-serif;font-weight:bold;font-size:medium;color:' + color1 + ';';
+	text.style.cssText = 'font-size: 63px; position: absolute; width: 100%; top: 0; text-align:center;font-family:fantasy,sans-serif;color:' + color1 + ';';
 
 	svg.appendChild( ramp );
 	svg.appendChild( progress );
@@ -317,6 +318,9 @@ ThumbControllers.CircularSlider = function ( options ) {
 	if ( that.display )
 
 		container.appendChild( text );
+
+	text.addEventListener( 'mousedown', onMouseDown, false );
+	text.addEventListener( 'touchstart', onMouseDown, false );
 
 	progress.addEventListener( 'mousedown', onMouseDown, false );
 	progress.addEventListener( 'touchstart', onMouseDown, false );
@@ -364,6 +368,10 @@ ThumbControllers.CircularSlider = function ( options ) {
 	}
 
 	function onMouseDown ( e ) {
+
+		e.preventDefault();
+
+		e.stopPropagation();
 
 		var ref = container;
 
@@ -417,7 +425,7 @@ ThumbControllers.CircularSlider = function ( options ) {
 
 		var value = typeof v === 'undefined' ? that.value : v;
 
-		thumbValue = value;
+		thumbValue = 1 - value;
 
 		progress.style.strokeDashoffset = ( thumbValue * 503 ).toString();
 
@@ -471,6 +479,8 @@ ThumbControllers.CircularSlider = function ( options ) {
 		result = x < 0 ? Math.PI + a : a;
 
 		result /= 2 * Math.PI;
+
+		result = 1 - result;
 
 		return result;
 

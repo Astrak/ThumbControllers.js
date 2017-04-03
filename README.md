@@ -3,23 +3,16 @@
 [![License][license-badge]][license-badge-url]
 [![Dependencies][dependencies-badge]][dependencies-badge-url]
 
-A library to avoid tons of CSS to make input (type range) available for mobile. 
-
-Also offers vertical and circular versions.
+A collection of 3 types sliders to replace inputs of type range on mobile.
 
 See [example on Codepen](http://codepen.io/Astrak/pen/yYJJXN?editors=0010).
 
-+ Horizontal :
 ```js
-const slider = new ThumbControllers.Slider();
+const horizontalSlider = new ThumbControllers.Slider();
+const verticalSlider = new ThumbControllers.Slider({ vertical: true });
+const circularSlider = new ThumbControllers.CircularSlider();
 ```
-![Simple slider](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/slider.png "Simple slider")
-
-+ Vertical :
-```js
-const slider = new ThumbControllers.Slider({ vertical: true });
-```
-![Simple slider](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/vert-slider.png "Simple slider")
+![ThumbControllers.js](https://raw.githubusercontent.com/Astrak/ThumbControllers.js/master/sliders.png "ThumbControllers.js")
 
 ## Full pattern
 
